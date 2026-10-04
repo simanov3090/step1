@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { menu } from "@/data/menu";
-import { saveOrder } from "@/lib/orders";
+import { isOrderStorageReady, saveOrder } from "@/lib/orders";
 
 export const runtime = "nodejs";
 
@@ -25,6 +25,9 @@ function text(value: unknown, maxLength: number) {
 export async function POST(request: Request) {
   if (!process.env.ADMIN_PASSWORD || !process.env.ADMIN_SESSION_SECRET) {
     return NextResponse.json({ error: "Приём заказов пока не настроен." }, { status: 503 });
+  }
+  if (!isOrderStorageReady()) {
+    return NextResponse.json({ error: "Для production подключите постоянное хранилище заказов." }, { status: 503 });
   }
 
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";

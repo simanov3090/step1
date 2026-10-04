@@ -62,6 +62,14 @@ export const menu: MenuProduct[] = [
   { id: "spicy-salmon", name: "Spicy Salmon", category: "Острые", description: "Лосось · спайси-соус · зелёный лук", price: 590, image: "photo-1579584425555-c3ce17fd4351" },
   { id: "spicy-tuna", name: "Spicy Tuna", category: "Острые", description: "Тунец · кимчи · хрустящий рис", price: 620, image: "photo-1617196034796-73dfa7b1fd56" },
   { id: "spicy-ebi", name: "Spicy Ebi", category: "Острые", description: "Креветка · авокадо · острый айоли", price: 610, image: "photo-1611143669185-af224c5e3252" },
+  { id: "philly-mango", name: "Филадельфия с манго", category: "Филадельфия", description: "Лосось · манго · сливочный сыр", price: 820, image: "photo-1729698597333-358449c1d0e8", new: true },
+  { id: "philly-shrimp", name: "Филадельфия с креветкой", category: "Филадельфия", description: "Лосось · креветка · сливочный сыр", price: 850, image: "photo-1534604973900-c43ab4c2e0ab" },
+  { id: "baked-crab", name: "Запечённый краб", category: "Запечённые", description: "Краб · сырный мусс · унаги", price: 680, image: "photo-1611143669185-af224c5e3252" },
+  { id: "tempura-ebi", name: "Темпура Эби", category: "Темпура", description: "Креветка · авокадо · хрустящий кляр", price: 670, image: "photo-1534604973900-c43ab4c2e0ab" },
+  { id: "tuna-maki", name: "Маки с тунцом", category: "Классические", description: "Тунец · рис · нори", price: 460, image: "photo-1553621042-f6e147245754" },
+  { id: "nigiri-tuna", name: "Нигири Тунец", category: "Суши", description: "Тунец · рис · 2 шт.", price: 230, image: "photo-1729698597384-d218328dc3a9" },
+  { id: "set-warm", name: "Сет «Тёплый»", category: "Сеты", description: "Запечённый лосось · эби темпура · 24 шт.", price: 1790, image: "photo-1534604973900-c43ab4c2e0ab", new: true },
+  { id: "spicy-crab", name: "Spicy Crab", category: "Острые", description: "Краб · острый айоли · зелёный лук", price: 640, image: "photo-1729698597333-358449c1d0e8" },
 ];
 
 export const menuDetails: Record<string, MenuProductDetails> = {
@@ -169,6 +177,46 @@ export const menuDetails: Record<string, MenuProductDetails> = {
     pieces: 8, weight: 270,
     ingredients: [{ name: "Рис", grams: 125 }, { name: "Креветка", grams: 65 }, { name: "Авокадо", grams: 25 }, { name: "Сливочный сыр", grams: 20 }, { name: "Огурец", grams: 20 }, { name: "Спайси-соус и нори", grams: 15 }],
     story: "Креветка и авокадо смягчают остроту айоли. Вкус получается сливочным, свежим и с лёгким жаром.",
+  },
+  "philly-mango": {
+    pieces: 8, weight: 290,
+    ingredients: [{ name: "Рис", grams: 115 }, { name: "Лосось", grams: 95 }, { name: "Сливочный сыр", grams: 45 }, { name: "Манго", grams: 30 }, { name: "Нори", grams: 5 }],
+    story: "Сладкое спелое манго подчёркивает нежность лосося и добавляет классической Филадельфии солнечную фруктовую ноту.",
+  },
+  "philly-shrimp": {
+    pieces: 8, weight: 300,
+    ingredients: [{ name: "Рис", grams: 115 }, { name: "Лосось", grams: 85 }, { name: "Креветка", grams: 45 }, { name: "Сливочный сыр", grams: 45 }, { name: "Огурец", grams: 5 }, { name: "Нори", grams: 5 }],
+    story: "Лосось снаружи, креветка внутри: два морских вкуса соединяются мягкой сливочной серединой.",
+  },
+  "baked-crab": {
+    pieces: 8, weight: 290,
+    ingredients: [{ name: "Рис", grams: 120 }, { name: "Краб", grams: 55 }, { name: "Сливочный сыр", grams: 35 }, { name: "Сырный мусс", grams: 45 }, { name: "Унаги", grams: 25 }, { name: "Нори", grams: 10 }],
+    story: "Нежный краб и воздушный сырный мусс запекаются до золотистой шапочки; унаги добавляет карамельный штрих.",
+  },
+  "tempura-ebi": {
+    pieces: 8, weight: 280,
+    ingredients: [{ name: "Рис", grams: 125 }, { name: "Креветка", grams: 70 }, { name: "Авокадо", grams: 30 }, { name: "Кляр", grams: 35 }, { name: "Соус понзу", grams: 15 }, { name: "Нори", grams: 5 }],
+    story: "Золотистая креветка темпура, сливочный авокадо и лёгкий понзу — контраст текстур в каждом кусочке.",
+  },
+  "tuna-maki": {
+    pieces: 6, weight: 170,
+    ingredients: [{ name: "Рис", grams: 115 }, { name: "Тунец", grams: 45 }, { name: "Нори", grams: 10 }],
+    story: "Минималистичный маки с плотным тунцом. Чистый вкус рыбы, риса и листа нори.",
+  },
+  "nigiri-tuna": {
+    pieces: 2, weight: 72,
+    ingredients: [{ name: "Тунец", grams: 28 }, { name: "Рис", grams: 43 }, { name: "Васаби", grams: 1 }],
+    story: "Свежий тунец с деликатной текстурой на тёплом рисе ручной формовки.",
+  },
+  "set-warm": {
+    pieces: 24, weight: 820,
+    ingredients: [{ name: "Запечённый лосось · 8 шт.", grams: 300 }, { name: "Эби темпура · 8 шт.", grams: 280 }, { name: "Запечённый краб · 8 шт.", grams: 240 }],
+    story: "Три тёплых ролла с запечённой шапочкой и хрустящей креветкой — согревающий сет для уютного вечера.",
+  },
+  "spicy-crab": {
+    pieces: 8, weight: 275,
+    ingredients: [{ name: "Рис", grams: 125 }, { name: "Краб", grams: 65 }, { name: "Сливочный сыр", grams: 30 }, { name: "Огурец", grams: 20 }, { name: "Острый айоли", grams: 25 }, { name: "Нори и зелёный лук", grams: 10 }],
+    story: "Сладковатый краб встречается с пряным айоли, а зелёный лук добавляет свежий аромат.",
   },
 };
 

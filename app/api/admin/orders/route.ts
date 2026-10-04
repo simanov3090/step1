@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
-import { changeOrderStatus, listOrders, orderStatuses } from "@/lib/orders";
+import { changeOrderStatus, isOrderStorageReady, listOrders, orderStatuses } from "@/lib/orders";
 
 export const runtime = "nodejs";
 
 export async function GET() {
   if (!await isAdminAuthenticated()) return NextResponse.json({ error: "Нужен вход администратора." }, { status: 401 });
+  if (!isOrderStorageReady()) return NextResponse.json({ error: "Для production подключите постоянное хранилище заказов." }, { status: 503 });
   try {
     const orders = await listOrders();
     return NextResponse.json({ orders }, { headers: { "Cache-Control": "no-store, private" } });
@@ -16,6 +17,7 @@ export async function GET() {
 
 export async function PATCH(request: Request) {
   if (!await isAdminAuthenticated()) return NextResponse.json({ error: "Нужен вход администратора." }, { status: 401 });
+  if (!isOrderStorageReady()) return NextResponse.json({ error: "Для production подключите постоянное хранилище заказов." }, { status: 503 });
 
   let body: unknown;
   try {

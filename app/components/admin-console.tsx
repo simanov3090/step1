@@ -1,7 +1,8 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { orderStatuses, type StoredOrder, type OrderStatus } from "@/lib/order-types";
+import { AdminReservations } from "@/app/components/admin-reservations";
 import { formatPrice } from "@/data/menu";
 
 const statusLabels: Record<OrderStatus, string> = {
@@ -24,6 +25,7 @@ export function AdminConsole() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
   const [lastUpdated, setLastUpdated] = useState("");
+  const handleUnauthorized = useCallback(() => setAuthenticated(false), []);
 
   useEffect(() => {
     let active = true;
@@ -149,7 +151,7 @@ export function AdminConsole() {
         <section className="admin-login">
           <span className="admin-kicker">ВКУСНО СУШИ · BACK OFFICE</span>
           <h1>Вход <em>для команды.</em></h1>
-          <p>Заказы доставки и контакты гостей.</p>
+          <p>Заказы доставки, бронирования и контакты гостей.</p>
           <form onSubmit={logIn}>
             <label className="admin-field"><span>ЛОГИН</span><input required autoComplete="username" value={username} onChange={(event) => setUsername(event.target.value)} /></label>
             <label className="admin-field"><span>ПАРОЛЬ</span><input required type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} /></label>
@@ -171,6 +173,7 @@ export function AdminConsole() {
         <div className="admin-order-grid"><section><span className="admin-section-label">КЛИЕНТ</span><strong>{order.customer.name}</strong><a href={`tel:${order.customer.phone}`}>{order.customer.phone}</a>{order.customer.email && <a href={`mailto:${order.customer.email}`}>{order.customer.email}</a>}</section><section><span className="admin-section-label">ДОСТАВКА</span><strong>{order.customer.city}</strong><span>{order.customer.address}</span>{order.customer.comment && <small>Комментарий: {order.customer.comment}</small>}</section><section><span className="admin-section-label">СВЯЗЬ</span><strong>{order.contactMethod}</strong><details><summary>Состав заказа · {order.items.reduce((sum, item) => sum + item.quantity, 0)} шт.</summary>{order.items.map((item) => <div className="admin-order-item" key={item.productId}><span>{item.name} × {item.quantity}</span><span>{formatPrice(item.price * item.quantity)}</span></div>)}</details></section></div>
         <div className="admin-order-total"><span>ИТОГО</span><strong>{formatPrice(order.total)}</strong></div>
       </article>)}</section>}
+      <AdminReservations onUnauthorized={handleUnauthorized} />
     </main>
   );
 }

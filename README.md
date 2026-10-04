@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Вкусно Суши
 
-## Getting Started
+Сайт ресторана на Next.js 16 и React 19: каталог, карточки блюд, корзина, оформление доставки и админка заказов.
 
-First, run the development server:
+## Локальный запуск
 
 ```bash
+npm ci
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+В `.env.local` задайте собственные `ADMIN_PASSWORD` и `ADMIN_SESSION_SECRET`. Логин задаётся через `ADMIN_USERNAME` (по умолчанию `admin`). Откройте http://localhost:3000; админка доступна по `/admin`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Для локального хранения заказов удалите из `.env.local` строки `SUPABASE_URL` и `SUPABASE_SERVICE_ROLE_KEY`: заполненный шаблон содержит примеры, а не рабочие реквизиты. Без этих переменных заказы сохраняются в `.data/orders.json`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Основные файлы
 
-## Learn More
+- `data/menu.ts` — товары, цены и категории.
+- `app/components/cart-provider.tsx` — корзина и оформление заказа.
+- `app/api/orders/route.ts` — проверка заказа и расчёт суммы по ценам каталога.
+- `app/admin/page.tsx` — вход и управление заказами.
+- `lib/orders.ts` — файловое хранилище и интеграция Supabase.
 
-To learn more about Next.js, take a look at the following resources:
+## Проверки
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run lint
+npx tsc --noEmit
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Production
 
-## Deploy on Vercel
+Для приёма заказов необходимы реквизиты администратора и постоянное хранилище Supabase. Инструкция и схема БД находятся в [supabase/README.md](supabase/README.md). Секреты используются только на сервере и не должны попадать в Git или переменные `NEXT_PUBLIC_*`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Текущие ограничения
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Форма `/reservation` сохраняет бронирования; список доступен в `/admin` и обновляется каждые 12 секунд. Локальное хранилище — `.data/reservations.json`, production — таблица Supabase `reservations`. Значение 7 в поле гостей означает «6+ гостей». Оплата на сайте не подключена; заказ подтверждается менеджером. Ограничение частоты запросов действует в памяти отдельного серверного процесса.

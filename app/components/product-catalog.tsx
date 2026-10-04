@@ -11,7 +11,7 @@ export function ProductCatalog() {
   const products = filter === "Все" ? menu : menu.filter((product) => product.category === filter);
 
   return (
-    <section className="catalog-section" id="catalog">
+    <section className="catalog-section" aria-label="Каталог блюд">
       <div className="catalog-heading scroll-reveal">
         <div><span className="eyebrow"><i /> РУЧНАЯ РАБОТА · СВЕЖИЙ УЛОВ</span><h2>Наши <em>роллы</em></h2></div>
         <span className="catalog-count">{String(products.length).padStart(2, "0")} ПОЗИЦИЙ</span>
@@ -19,7 +19,7 @@ export function ProductCatalog() {
       <div className="catalog-filters scroll-reveal" role="tablist" aria-label="Категории меню">
         {menuCategories.map((category) => <button key={category} type="button" role="tab" aria-selected={filter === category} className={filter === category ? "filter-chip active" : "filter-chip"} onClick={() => setFilter(category)}>{category}</button>)}
       </div>
-      <div className="product-grid" key={filter}>
+      <div className="product-grid" id="catalog" key={filter}>
         {products.map((product, index) => {
           const quantity = items.find((item) => item.product.id === product.id)?.quantity ?? 0;
           return <article className="product-card scroll-reveal" key={product.id} style={{ "--item-index": index } as CSSProperties}>

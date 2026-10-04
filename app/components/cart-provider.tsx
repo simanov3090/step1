@@ -35,6 +35,7 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | null>(null);
 const storageKey = "vkusno-sushi-cart-v1";
+const maxQuantity = 99;
 const emptyCart: CartItem[] = [];
 const cartListeners = new Set<() => void>();
 let cartSnapshot: CartItem[] | null = null;
@@ -45,9 +46,10 @@ function readCart(value: string | null): CartItem[] {
     const parsed = JSON.parse(value) as CartItem[];
     if (!Array.isArray(parsed)) return emptyCart;
     return parsed.flatMap((item) => {
+      if (!item || typeof item !== "object") return [];
       const product = menu.find((candidate) => candidate.id === item.product?.id);
       return product && Number.isInteger(item.quantity) && item.quantity > 0
-        ? [{ product, quantity: item.quantity }]
+        ? [{ product, quantity: Math.min(item.quantity, maxQuantity) }]
         : [];
     });
   } catch {
@@ -57,7 +59,13 @@ function readCart(value: string | null): CartItem[] {
 
 function getCartSnapshot() {
   if (typeof window === "undefined") return emptyCart;
-  if (cartSnapshot === null) cartSnapshot = readCart(localStorage.getItem(storageKey));
+  if (cartSnapshot === null) {
+    try {
+      cartSnapshot = readCart(localStorage.getItem(storageKey));
+    } catch {
+      cartSnapshot = emptyCart;
+    }
+  }
   return cartSnapshot;
 }
 
@@ -116,17 +124,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     updateCart((current) => {
       const found = current.find((item) => item.product.id === product.id);
       return found
-        ? current.map((item) => item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
+        ? current.map((item) => item.product.id === product.id ? { ...item, quantity: Math.min(item.quantity + 1, maxQuantity) } : item)
         : [...current, { product, quantity: 1 }];
     });
   }
 
   function setQuantity(id: string, quantity: number) {
+    if (!Number.isInteger(quantity)) return;
     if (quantity < 1) {
       updateCart((current) => current.filter((item) => item.product.id !== id));
       return;
     }
-    updateCart((current) => current.map((item) => item.product.id === id ? { ...item, quantity } : item));
+    updateCart((current) => current.map((item) => item.product.id === id ? { ...item, quantity: Math.min(quantity, maxQuantity) } : item));
   }
 
   function remove(id: string) {
@@ -252,7 +261,7 @@ function CartDrawer() {
           <>
             <div className="cart-items">{items.map(({ product, quantity }) => <article className="cart-item" key={product.id}>
               <div className="cart-item-image" style={{ backgroundImage: `url("${menuPhoto(product.image, 240)}")` }} role="img" aria-label={product.name} />
-              <div className="cart-item-details"><h3>{product.name}</h3><span>{formatPrice(product.price)}</span><div className="quantity-stepper"><button type="button" aria-label={`Уменьшить ${product.name}`} onClick={() => setQuantity(product.id, quantity - 1)}>−</button><span>{quantity}</span><button type="button" aria-label={`Добавить ${product.name}`} onClick={() => setQuantity(product.id, quantity + 1)}>+</button></div></div>
+              <div className="cart-item-details"><h3>{product.name}</h3><span>{formatPrice(product.price)}</span><div className="quantity-stepper"><button type="button" aria-label={`Уменьшить ${product.name}`} onClick={() => setQuantity(product.id, quantity - 1)}>−</button><span>{quantity}</span><button type="button" aria-label={`Добавить ${product.name}`} disabled={quantity >= maxQuantity} onClick={() => setQuantity(product.id, quantity + 1)}>+</button></div></div>
               <div className="cart-item-end"><strong>{formatPrice(product.price * quantity)}</strong><button type="button" className="remove-item" onClick={() => remove(product.id)}>Удалить</button></div>
             </article>)}</div>
             <div className="drawer-footer"><div className="drawer-total"><span>Итого</span><strong>{formatPrice(total)}</strong></div><p>Доставка рассчитывается при подтверждении.</p><button className="button button--copper full-width" type="button" onClick={() => setCheckoutOpen(true)}>Оформить заказ <span>↗</span></button><button className="continue-button" type="button" onClick={closeDrawer}>Продолжить покупки</button></div>

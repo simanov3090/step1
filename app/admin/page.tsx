@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AdminConsole } from "@/app/components/admin-console";
 
 export const metadata: Metadata = {
-  title: "Заказы — Вкусно Суши",
+  title: "Заказы и бронирования — Вкусно Суши",
   robots: { index: false, follow: false },
 };
 
